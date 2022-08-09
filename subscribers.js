@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const ConnectDB = require("./db");
 const subscribersModel = require("./Models/subscribersModel");
+const categoriesModel = require("./Models/categoriesModel");
 
 app.use(express.json());
 app.use(cors());
@@ -16,10 +17,48 @@ app.get("/", (req, res) => {
   res.send("Welcome to GOPDAC....");
 });
 
+app.get("/categories", async (req, res) => {
+  ConnectDB("fintrackdb");
+  const result = await categoriesModel.find({});
+  res.send(result);
+});
+
+app.post("/addcategory", (req, res) => {
+  ConnectDB("fintrackdb");
+  const newCategory = new categoriesModel(req.body);
+  newCategory.save();
+  res.send("New Catogory has been added!!!");
+});
+
 app.get("/subscribers", async (req, res) => {
   ConnectDB("fintrackdb");
   const result = await subscribersModel.find({});
   res.send(result);
+});
+app.post("/addsubscriber", (req, res) => {
+  ConnectDB("fintrackdb");
+  const newSubsciber = new subscribersModel(req.body);
+  newSubsciber.save();
+  res.send("New Suscrider added successfully!");
+});
+
+app.post("/subscribersbycity", async (req, res) => {
+  ConnectDB("fintrackdb");
+  const result = await subscribersModel.find(req.body);
+  res.send(result);
+});
+
+app.post("/subsbycity", (req, res) => {
+  const data = req.body;
+  res.json(data.city);
+});
+
+app.get("/fullname", (req, res) => {
+  res.send("This is my full name");
+});
+app.post("/fullname", (req, res) => {
+  const data = req.body;
+  res.json(data.fname + " " + data.mname + " " + data.lname);
 });
 
 app.get("/addbank", (req, res) => {
