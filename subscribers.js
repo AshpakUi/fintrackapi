@@ -4,6 +4,7 @@ const app = express();
 const ConnectDB = require("./db");
 const subscribersModel = require("./Models/subscribersModel");
 const categoriesModel = require("./Models/categoriesModel");
+const gendersModel = require("./Models/gendersModel");
 
 app.use(express.json());
 app.use(cors());
@@ -21,6 +22,19 @@ app.get("/categories", async (req, res) => {
   ConnectDB("fintrackdb");
   const result = await categoriesModel.find({});
   res.send(result);
+});
+
+app.get("/genders", async (req, res) => {
+  ConnectDB("fintrackdb");
+  const result = await gendersModel.find({});
+  res.send(result);
+});
+
+app.post("/addgender", (req, res) => {
+  ConnectDB("fintrackdb");
+  const newGender = new gendersModel(req.body);
+  newGender.save();
+  res.send("New Gender has been added!!!");
 });
 
 app.post("/addcategory", (req, res) => {
